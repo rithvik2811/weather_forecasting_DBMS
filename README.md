@@ -1,1 +1,1 @@
-# Summer Course DBMS minors
+# Summer Course DBMS minors MiniProject
