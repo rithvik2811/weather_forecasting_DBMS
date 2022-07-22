@@ -85,12 +85,14 @@ def user_options():
     option_one = '1. To display all records of a table.'    
     option_two = '2. To add records to a table. '
     option_three = '3. To update a record in a table.'
-    option_four = '4. To delete a record of a table.\n'
+    option_four = '4. To delete a record of a table.'
+    exit_option = '0. To exit.\n'
 
     print(option_one)
     print(option_two)
     print(option_three)
     print(option_four)
+    print(exit_option)
 
 def get_user_option():
     return int(input())
@@ -352,6 +354,8 @@ def exe_operation(user_option):
     if user_option == 4:
         display_table_option = display_table_options()
         delete_record(display_table_option-1)
+    if user_option == 0:
+        return
 
 
 # Connect to your postgres DB
