@@ -405,17 +405,14 @@ def user_input():
 def open_DBmanager_dialogue():
     print('Would you like to manage DB?(y/n)')
     open_DBmanager = input()
-    if open_DBmanager == 'y':
+    if open_DBmanager == 'y' or open_DBmanager == 'Y':
         clear_screen()
         screen_display()
         user_input()
-    elif open_DBmanager == 'n':
+    elif open_DBmanager == 'n' or open_DBmanager == 'N':
         return
     else:
         sys.exit("INVALID ENTRY!")
 
 # main
 open_DBmanager_dialogue()
-#clear_screen()
-#screen_display()
-#user_input()

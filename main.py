@@ -1,75 +1,5 @@
-#import sys
-#import os
-#import psycopg2
 from manage_DB import *
 import time
-#table_names = ['EMPLOYEE', 'DEPARTMENT']
-#attributes_dict = {
-#    "EMPLOYEE": ['id', 'name', 'salary', 'dept_id'],
-#    "DEPARTMENT": ['dept_id', 'dept_name', 'HOD']
-#}
-
-#hostname = 'localhost'
-#database = 'MiniProjectDB'
-#username = 'postgres'
-#pwd = 'arotq'
-#port_id = 5432
-
-def prep_DB():
-
-    cur = None
-    conn = None
-    try:
-        conn = psycopg2.connect(
-            host = hostname,
-            dbname = database,
-            user = username,
-            password = pwd,
-            port = port_id)
-    
-        cur = conn.cursor()
-
-        cur.execute('DROP TABLE IF EXISTS employee')
-        create_script = ''' CREATE TABLE IF NOT EXISTS employee (
-                            id      int PRIMARY KEY,
-                            name    varchar(40) NOT NULL,
-                            salary  int,
-                            dept_id varchar(30)) '''
-        cur.execute(create_script)
-
-        insert_script  = 'INSERT INTO employee (id, name, salary, dept_id) VALUES (%s, %s, %s, %s)'
-        insert_values = [(6, 'James', 1200, 'D1'), (2, 'Robin', 1500, 'D2'), (3, 'John', 1700, 'D3')]
-        for record in insert_values:
-            cur.execute(insert_script, record)
-
-        cur.execute('SELECT * FROM EMPLOYEE')
-        for record in cur.fetchall():
-            print(record)
-
-        cur.execute('DROP TABLE IF EXISTS department')
-        create_script = ''' CREATE TABLE IF NOT EXISTS department (
-                            dept_id      varchar(30) PRIMARY KEY,
-                            dept_name    varchar(40) NOT NULL,
-                            HOD          varchar(30)) '''
-        cur.execute(create_script)
-
-        insert_script  = 'INSERT INTO department (dept_id, dept_name, HOD) VALUES (%s, %s, %s)'
-        insert_values = [('D1', 'ECE', 'SNR'), ('D2', 'CSE', 'Jospeh'), ('D3', 'Mech', 'Kris')]
-        for record in insert_values:
-            cur.execute(insert_script, record)
-        
-        cur.execute('SELECT * FROM DEPARTMENT')
-        for record in cur.fetchall():
-            print(record)
-
-        conn.commit()    
-    except Exception as error:
-        print(error)
-    finally:
-        if cur is not None:
-            cur.close()
-        if conn is not None:
-            conn.close()
 
 def display_title():
     
@@ -226,7 +156,7 @@ def insert_record(display_table_option):
         attr_count = 0
         record_count = 0
         while(record_count<total_record_count):
-            print('Enter Record-', record_count)
+            print('Enter Record-', record_count+1)
             insert_values = []
             while(attr_count<total_attributes):
                 print('Enter value for ', attributes_table_list[attr_count])
@@ -351,6 +281,7 @@ def exe_operation(user_option):
     if user_option == 1:
         display_table_option = display_table_options()
         display_table(display_table_option-1)
+        print('Committed to DB successfully!\n\n')
         wait_two_sec()
         clear_screen()
         return 1
@@ -377,55 +308,6 @@ def exe_operation(user_option):
         return 1
     return 0
 
-
-# Connect to your postgres DB
-def postgresDB():
-    
-    hostname = 'localhost'
-    database = 'MiniProjectDB'
-    username = 'postgres'
-    pwd = 'arotq'
-    port_id = 5432
-
-    cur = None
-    conn = None
-    try:
-        conn = psycopg2.connect(
-            host = hostname,
-            dbname = database,
-            user = username,
-            password = pwd,
-            port = port_id)
-    
-        cur = conn.cursor()
-
-        cur.execute('DROP TABLE IF EXISTS employee')
-        create_script = ''' CREATE TABLE IF NOT EXISTS employee (
-                            id      int PRIMARY KEY,
-                            name    varchar(40) NOT NULL,
-                            salary  int,
-                            dept_id varchar(30)) '''
-        cur.execute(create_script)
-
-        insert_script  = 'INSERT INTO employee (id, name, salary, dept_id) VALUES (%s, %s, %s, %s)'
-        insert_values = [(6, 'James', 1200, 'D1'), (2, 'Robin', 1500, 'D2'), (3, 'John', 1700, 'D3')]
-        for record in insert_values:
-            cur.execute(insert_script, record)
-
-        cur.execute('SELECT * FROM EMPLOYEE')
-        for record in cur.fetchall():
-            print(record[1], record[2])
-    
-
-        conn.commit()    
-    except Exception as error:
-        print(error)
-    finally:
-        if cur is not None:
-            cur.close()
-        if conn is not None:
-            conn.close()
-
 def main():
     while(1):
         user_option = screen_display()
@@ -433,9 +315,5 @@ def main():
             return
         
 #main
-#prep_DB()
+clear_screen()
 main()
-#clear_screen()
-#user_option = screen_display()
-#exe_operation(user_option)
-#postgresDB()
