@@ -14,7 +14,7 @@ def user_options():
     print('\nCHOOSE ONE OF THE OPTIONS!.....\n')
     
     option_one = '1. To display all records of a table.'    
-    option_two = '2. To add records to a table. '
+    option_two = '2. To insert records to a table. '
     option_three = '3. To update a record in a table.'
     option_four = '4. To delete a record of a table.\n\n'
     exit_option = '0. To exit.\n'
@@ -158,6 +158,7 @@ def insert_record(display_table_option):
         while(record_count<total_record_count):
             print('Enter Record-', record_count+1)
             insert_values = []
+            attr_count = 0
             while(attr_count<total_attributes):
                 print('Enter value for ', attributes_table_list[attr_count])
                 insert_value = input()
