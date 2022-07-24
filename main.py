@@ -2,7 +2,7 @@
 #import os
 #import psycopg2
 from manage_DB import *
-
+import time
 #table_names = ['EMPLOYEE', 'DEPARTMENT']
 #attributes_dict = {
 #    "EMPLOYEE": ['id', 'name', 'salary', 'dept_id'],
@@ -114,7 +114,6 @@ def screen_display():
     return user_option
 
 def display_table_options():
-    os.system('cls')
     
     for index in range(0, len(table_names)):
         print(index+1, '. ', table_names[index])
@@ -141,6 +140,8 @@ def display_table(display_table_option):
         
         cur_execute_str = 'SELECT * FROM ' + table_name
         cur.execute(cur_execute_str)
+
+        print('\n\nContents of - ', table_name)
 
         for record in cur.fetchall():
             print(record)
@@ -218,21 +219,23 @@ def insert_record(display_table_option):
         total_record_count = get_no_records()
         record_count = total_record_count
 
-        total_attributes = len(attributes_dict[table_name])
+        attributes_table_list = attributes_dict[table_name]
+        total_attributes = len(attributes_table_list)
         attr_count = total_attributes
 
-        insert_value = []
-
-        while(record_count):
+        attr_count = 0
+        record_count = 0
+        while(record_count<total_record_count):
             print('Enter Record-', record_count)
             insert_values = []
-            while(attr_count):
+            while(attr_count<total_attributes):
+                print('Enter value for ', attributes_table_list[attr_count])
                 insert_value = input()
                 insert_values.append(insert_value)            
 
-                attr_count = attr_count - 1
+                attr_count = attr_count + 1
             cur.execute(insert_script, insert_values)
-            record_count = record_count - 1
+            record_count = record_count + 1
 
         conn.commit()
     except Exception as error:
@@ -340,24 +343,39 @@ def delete_record(display_table_option):
         if conn is not None:
             conn.close()
 
-    
+def wait_two_sec():
+    time.sleep(4.5)
     
     
 def exe_operation(user_option):
     if user_option == 1:
         display_table_option = display_table_options()
         display_table(display_table_option-1)
+        wait_two_sec()
+        clear_screen()
+        return 1
     if user_option == 2:
         display_table_option = display_table_options()
         insert_record(display_table_option-1)
+        print('Committed to DB successfully!\n\n')
+        wait_two_sec()
+        clear_screen()        
+        return 1
     if user_option == 3:
         display_table_option = display_table_options()
         update_record(display_table_option-1)
+        print('Committed to DB successfully!\n\n')
+        wait_two_sec()
+        clear_screen()
+        return 1
     if user_option == 4:
         display_table_option = display_table_options()
         delete_record(display_table_option-1)
-    if user_option == 0:
-        return
+        print('Committed to DB successfully!\n\n')
+        wait_two_sec()
+        clear_screen()
+        return 1
+    return 0
 
 
 # Connect to your postgres DB
@@ -408,8 +426,16 @@ def postgresDB():
         if conn is not None:
             conn.close()
 
+def main():
+    while(1):
+        user_option = screen_display()
+        if exe_operation(user_option) == 0:
+            return
+        
 #main
 #prep_DB()
-user_option = screen_display()
-exe_operation(user_option)
+main()
+#clear_screen()
+#user_option = screen_display()
+#exe_operation(user_option)
 #postgresDB()
