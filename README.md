@@ -1,1 +1,1 @@
-# weather_forecasting_DBMS
+# Summer Course DBMS minors MiniProject
