@@ -2,19 +2,23 @@ import sys
 import os
 import psycopg2
 
-table_names = ['users_city', 'country', 'city', 'weather_status', 'weather_hourly_forecast_log', 'weather_daily_forecast_log']
+table_names = ['COUNTRY', 'CITY', 'USERS_CITY', 'WEATHER_STATUS',
+               'WEATHER_HOURLY_FORECAST_LOG', 'WEATHER_DAILY_FORECAST_LOG']
 attributes_dict = {
-    "USERS_CITY": ['user_id', 'city_id', 'added_on'],
-    "COUNTRY":                     ['id', 'country_name'],
-    "CITY":                        ['id', 'city_name', 'city_longitude', 'city_latitude', 'zip', 'country_id'],
-    "WEATHER_STATUS":              ['id', 'weather_st'],
-    "WEATHER_HOURLY_FORECAST_LOG": ['id', 'city_id', 'start_timestamp', 'end_timestamp',
-                                    'weather_status_id', 'temperature',
-                                    'humidity_in_percentage', 'wind_speed_in_mph',
-                                    'wind_direction', 'pressure_in_mmhg', 'visibility_in_mph'],
-    "WEATHER_DAILY_FORECAST_LOG":  ['city_id', 'calendar_date', 'weather_status_id',
-                                    'min_temperature', 'max_temperature', 'avg_humidity_in_percentage',
-                                    'sunrise_time', 'sunset_time', 'source_system']
+    "USERS_CITY":                   ['user_id', 'city_id', 'added_on'],
+    "COUNTRY":                      ['id', 'country_name'],
+    "CITY":                         ['id', 'city_name', 'city_longitude',
+                                     'city_latitude', 'zip', 'country_id'],
+    "WEATHER_STATUS":               ['id', 'weather_st'],
+    "WEATHER_HOURLY_FORECAST_LOG":  ['id', 'city_id', 'start_timestamp', 'end_timestamp',
+                                     'weather_status_id', 'temperature',
+                                     'humidity_in_percentage', 'wind_speed_in_mph',
+                                     'wind_direction', 'pressure_in_mmhg',
+                                     'visibility_in_mph'],
+    "WEATHER_DAILY_FORECAST_LOG":   ['city_id', 'calendar_date', 'weather_status_id',
+                                     'min_temperature', 'max_temperature',
+                                     'avg_humidity_in_percentage',
+                                     'sunrise_time', 'sunset_time', 'source_system']
 }
 
 hostname = 'localhost'
@@ -83,7 +87,7 @@ def add_DBtables():
                             country_id     int NOT NULL,
                             CONSTRAINT fk_city
                                 FOREIGN KEY(country_id)
-                                    REFERENCES country(id)) '''
+                                    REFERENCES country(id) ON DELETE CASCADE) '''
         cur.execute(create_script)
 
         create_script = ''' CREATE TABLE IF NOT EXISTS users_city (
@@ -92,7 +96,7 @@ def add_DBtables():
                             added_on     DATE NOT NULL,
                             CONSTRAINT fk_users_city
                                 FOREIGN KEY(city_id)
-                                references city(id)) '''
+                                references city(id) ON DELETE CASCADE) '''
         cur.execute(create_script)
 
         create_script = ''' CREATE TABLE IF NOT EXISTS weather_status (
@@ -113,8 +117,9 @@ def add_DBtables():
                             pressure_in_mmhg        int NOT NULL,
                             visibility_in_mph       int NOT NULL,
                             CONSTRAINT fk_weather_hourly_forecast_log
-                                FOREIGN KEY(city_id) REFERENCES city(id),
-                                FOREIGN KEY(weather_status_id) REFERENCES weather_status(id))
+                                FOREIGN KEY(city_id) REFERENCES city(id) ON DELETE CASCADE,
+                                FOREIGN KEY(weather_status_id) REFERENCES weather_status(id)
+                                ON DELETE CASCADE)
                             '''
         cur.execute(create_script)
 
@@ -129,8 +134,9 @@ def add_DBtables():
                             sunset_time                timestamp NOT NULL,
                             source_system              varchar(20) NOT NULL,
                             CONSTRAINT fk_weather_daily_forecast_log
-                                FOREIGN KEY(city_id) REFERENCES city(id),
-                                FOREIGN KEY(weather_status_id) REFERENCES weather_status(id))
+                                FOREIGN KEY(city_id) REFERENCES city(id) ON DELETE CASCADE,
+                                FOREIGN KEY(weather_status_id) REFERENCES weather_status(id)
+                                ON DELETE CASCADE)
                             '''
         cur.execute(create_script) 
         
@@ -238,7 +244,9 @@ def populate_city():
                                               VALUES (%s, %s, %s, %s, %s, %s)'''
         insert_values = [(1, 'Bangalore', 103, 29, '560103', 1),
                          (2, 'Delhi', 180, 106, '110003', 1),
-                         (3, 'Mumbai', 89, 28, '400001', 1)]
+                         (3, 'Mumbai', 89, 28, '400001', 1),
+                         (4, 'Atlanta', 89, 28, '400001', 1),
+                         (5, 'Las Vegas', 89, 28, '400001', 1)]
         for record in insert_values:
             cur.execute(insert_script, record)
         
@@ -394,7 +402,20 @@ def user_input():
         else:
             return
 
+def open_DBmanager_dialogue():
+    print('Would you like to manage DB?(y/n)')
+    open_DBmanager = input()
+    if open_DBmanager == 'y':
+        clear_screen()
+        screen_display()
+        user_input()
+    elif open_DBmanager == 'n':
+        return
+    else:
+        sys.exit("INVALID ENTRY!")
+
 # main
-clear_screen
-screen_display()
-user_input()
+open_DBmanager_dialogue()
+#clear_screen()
+#screen_display()
+#user_input()

@@ -1,18 +1,19 @@
-import sys
-import os
-import psycopg2
+#import sys
+#import os
+#import psycopg2
+from manage_DB import *
 
-table_names = ['EMPLOYEE', 'DEPARTMENT']
-attributes_dict = {
-    "EMPLOYEE": ['id', 'name', 'salary', 'dept_id'],
-    "DEPARTMENT": ['dept_id', 'dept_name', 'HOD']
-}
+#table_names = ['EMPLOYEE', 'DEPARTMENT']
+#attributes_dict = {
+#    "EMPLOYEE": ['id', 'name', 'salary', 'dept_id'],
+#    "DEPARTMENT": ['dept_id', 'dept_name', 'HOD']
+#}
 
-hostname = 'localhost'
-database = 'MiniProjectDB'
-username = 'postgres'
-pwd = 'arotq'
-port_id = 5432
+#hostname = 'localhost'
+#database = 'MiniProjectDB'
+#username = 'postgres'
+#pwd = 'arotq'
+#port_id = 5432
 
 def prep_DB():
 
@@ -85,7 +86,7 @@ def user_options():
     option_one = '1. To display all records of a table.'    
     option_two = '2. To add records to a table. '
     option_three = '3. To update a record in a table.'
-    option_four = '4. To delete a record of a table.'
+    option_four = '4. To delete a record of a table.\n\n'
     exit_option = '0. To exit.\n'
 
     print(option_one)
@@ -114,15 +115,12 @@ def screen_display():
 
 def display_table_options():
     os.system('cls')
-
-    option_one = '1. Employee'
-    option_two = '2. Department'
-
-    print(option_one)
-    print(option_two)
+    
+    for index in range(0, len(table_names)):
+        print(index+1, '. ', table_names[index])
 
     display_table_option = int(input())
-    max_options = 2
+    max_options = 6
     check_user_option(display_table_option, max_options)
     return display_table_option
 
@@ -158,8 +156,7 @@ def display_table(display_table_option):
         
 def get_no_records():
 
-    print('Enter no. of records to insert:')
-
+    print('Enter no. of records to insert(MAX - 3):')
     record_count = int(input())
     max_records = 3
     check_user_option(record_count, max_records)
@@ -172,6 +169,8 @@ def gen_insert_script(table_name):
     attributes = attributes_dict[table_name]
     attributes_max  = len(attributes)
     attributes_str = '('
+
+    
 
     attributes_count = 0
     while(attributes_count<attributes_max):
@@ -211,7 +210,10 @@ def insert_record(display_table_option):
         cur = conn.cursor()
 
         table_name = table_names[display_table_option]
+        
         insert_script = gen_insert_script(table_name)
+
+        
 
         total_record_count = get_no_records()
         record_count = total_record_count
